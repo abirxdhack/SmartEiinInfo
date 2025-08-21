@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartDev's Institute Research API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #636e72);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .header p {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        .section {
+            padding: 3rem 0;
+        }
+        .status-card, .docs-card, .ads-card, .test-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .status-card:hover, .docs-card:hover, .ads-card:hover, .test-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+        }
+        .accordion-button {
+            background: linear-gradient(90deg, #2c3e50, #636e72);
+            color: white;
+            font-weight: 600;
+            border-radius: 10px !important;
+        }
+        .accordion-button:not(.collapsed) {
+            background: linear-gradient(90deg, #1a252f, #4b5457);
+            color: white;
+        }
+        .accordion-body {
+            background: #e9ecef;
+            border-radius: 0 0 10px 10px;
+        }
+        .status-response, .test-response {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+        .status-success, .test-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-error, .test-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .test-card .btn-primary {
+            background: linear-gradient(90deg, #2c3e50, #636e72);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        .test-card .btn-primary:hover {
+            background: linear-gradient(90deg, #1a252f, #4b5457);
+            transform: scale(1.05);
+        }
+        .ads-card {
+            background: linear-gradient(135deg, #ffffff, #f1f3f5);
+            color: #333;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        .ads-card h3 {
+            color: #333;
+            font-weight: 700;
+        }
+        .ads-card p {
+            color: #555;
+            font-size: 1.1rem;
+        }
+        .ads-card .btn-contact {
+            background-color: #ffc107;
+            color: #333;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .ads-card .btn-contact:hover {
+            background-color: #e0a800;
+            color: #000;
+            transform: scale(1.05);
+        }
+        .ads-card a {
+            color: #333;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .ads-card a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+        .footer {
+            background: linear-gradient(90deg, #2c3e50, #636e72);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .footer a {
+            color: #ffc107;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: #e0a800;
+        }
+        .dev-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #333;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            margin: 2rem 0;
+        }
+        .animate__fadeInUp {
+            animation: fadeInUp 1s ease-in;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        pre {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        .feature-list {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="animate__fadeInUp">SmartDev's Institute Research API</h1>
+            <p class="animate__fadeInUp">Status: <span id="api-status" class="fw-bold">Checking...</span></p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="container">
+            <h2 class="dev-name text-center animate__fadeInUp">API DEV Abir Arafat Chawdhury</h2>
+
+            <div class="status-card animate__fadeInUp">
+                <h3>API Features and Version</h3>
+                <p><strong>Version:</strong> 1.0.0</p>
+                <p><strong>Health:</strong> <span id="api-health" class="fw-bold">Checking...</span></p>
+                <p><strong>Features:</strong></p>
+                <ul class="feature-list">
+                    <li>Retrieve institute data with filters for division, district, thana, and type.</li>
+                    <li>Fetch employee and teacher details by EIIN number.</li>
+                    <li>Support for pagination and CSV export with timestamped filenames.</li>
+                    <li>Access lists of divisions, districts, thanas, and institute types.</li>
+                    <li>Robust error handling and caching for efficient data retrieval.</li>
+                </ul>
+                <div id="status-response" class="status-response"></div>
+            </div>
+
+            <div class="test-card animate__fadeInUp">
+                <h3>Test the API</h3>
+                <p>Enter EIIN number to fetch teacher data:</p>
+                <form id="test-form">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="division-select" class="form-label">Division</label>
+                            <select id="division-select" class="form-select">
+                                <option value="">Select Division</option>
+                                <option value="01">Barisal</option>
+                                <option value="02">Chittagong</option>
+                                <option value="03">Dhaka</option>
+                                <option value="04">Khulna</option>
+                                <option value="05">Rajshahi</option>
+                                <option value="06">Rangpur</option>
+                                <option value="07">Sylhet</option>
+                                <option value="08">Mymensingh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="district-select" class="form-label">District</label>
+                            <select id="district-select" class="form-select">
+                                <option value="">Select District</option>
+                                <option value="26">Dhaka</option>
+                                <option value="29">Faridpur</option>
+                                <option value="33">Gazipur</option>
+                                <option value="35">Gopalganj</option>
+                                <option value="48">Kishoreganj</option>
+                                <option value="54">Madaripur</option>
+                                <option value="56">Manikganj</option>
+                                <option value="59">Munshiganj</option>
+                                <option value="67">Narayanganj</option>
+                                <option value="68">Narsingdi</option>
+                                <option value="82">Rajbari</option>
+                                <option value="86">Shariatpur</option>
+                                <option value="93">Tangail</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="thana-select" class="form-label">Thana</label>
+                            <select id="thana-select" class="form-select">
+                                <option value="">Select Thana</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="institute-type-select" class="form-label">Institute Type</label>
+                            <select id="institute-type-select" class="form-select">
+                                <option value="">Select Institute Type</option>
+                                <option value="11">School</option>
+                                <option value="12">College</option>
+                                <option value="13">Madrasah</option>
+                                <option value="14">Technical</option>
+                                <option value="15">University</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eiin-input" class="form-label">EIIN Number (Required)</label>
+                        <input type="text" id="eiin-input" class="form-control" placeholder="Enter EIIN Number" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Fetch Teachers</button>
+                </form>
+                <div id="test-response" class="test-response"></div>
+            </div>
+
+            <div class="docs-card animate__fadeInUp">
+                <h3>API Documentation</h3>
+                <p>Click on each endpoint to view details, parameters, response formats, and features.</p>
+                <div class="accordion" id="apiDocsAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDivisions">
+                                /api/v1/divisions
+                            </button>
+                        </h2>
+                        <div id="collapseDivisions" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Retrieve a list of available divisions with their codes.</p>
+                                <p><strong>Parameters:</strong> None</p>
+                                <p><strong>Features:</strong> Returns a dictionary of division names and their codes.</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": {
+    "Barisal": "01",
+    "Chittagong": "02",
+    ...
+  },
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/divisions</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDistricts">
+                                /api/v1/districts
+                            </button>
+                        </h2>
+                        <div id="collapseDistricts" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Retrieve a list of available districts with their codes.</p>
+                                <p><strong>Parameters:</strong> None</p>
+                                <p><strong>Features:</strong> Returns a dictionary of district names and their codes, focused on the Dhaka division.</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": {
+    "Dhaka": "26",
+    "Faridpur": "29",
+    ...
+  },
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/districts</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThanas">
+                                /api/v1/thanas
+                            </button>
+                        </h2>
+                        <div id="collapseThanas" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Retrieve thanas for a specific district.</p>
+                                <p><strong>Parameters:</strong></p>
+                                <ul>
+                                    <li><code>district_code</code>: string (required) - The district code.</li>
+                                </ul>
+                                <p><strong>Features:</strong> Fetches thana names and codes for a given district, with fallback data for Rajbari (code: 82).</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": {
+    "ThanaName1": "Code1",
+    "ThanaName2": "Code2",
+    ...
+  },
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/thanas?district_code=26</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInstituteTypes">
+                                /api/v1/institute-types
+                            </button>
+                        </h2>
+                        <div id="collapseInstituteTypes" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Retrieve supported institute types (e.g., School, College).</p>
+                                <p><strong>Parameters:</strong> None</p>
+                                <p><strong>Features:</strong> Returns a dictionary of institute types and their IDs.</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": {
+    "School": 11,
+    "College": 12,
+    ...
+  },
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/institute-types</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseInstitutes">
+                                /api/v1/institutes
+                            </button>
+                        </h2>
+                        <div id="collapseInstitutes" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Fetch institutes with optional filters.</p>
+                                <p><strong>Parameters:</strong></p>
+                                <ul>
+                                    <li><code>page</code>: integer (default: 1) - Page number for pagination.</li>
+                                    <li><code>size</code>: integer (default: 10) - Number of records per page.</li>
+                                    <li><code>division_code</code>: string - Filter by division code.</li>
+                                    <li><code>district_code</code>: string - Filter by district code.</li>
+                                    <li><code>thana_code</code>: string - Filter by thana code.</li>
+                                    <li><code>institute_type_id</code>: integer (default: 11) - Filter by institute type ID.</li>
+                                    <li><code>is_govt</code>: boolean (default: false) - Filter by government status.</li>
+                                    <li><code>eiin_no</code>: string - Filter by EIIN number.</li>
+                                    <li><code>full_response</code>: boolean (default: false) - Include raw API response.</li>
+                                    <li><code>export_csv</code>: boolean (default: false) - Export data to CSV.</li>
+                                </ul>
+                                <p><strong>Features:</strong> Supports filtering by location, institute type, and government status. Optional CSV export with timestamped filenames.</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": [
+    {
+      "name": "Institute Name",
+      "name_bn": "Institute Name (BN)",
+      "eiin": "EIIN",
+      "type": "Institute Type",
+      "type_bn": "Type (BN)",
+      "division": "Division Name",
+      "division_bn": "Division (BN)",
+      "district": "District Name",
+      "district_bn": "District (BN)",
+      "thana": "Thana Name",
+      "thana_bn": "Thana (BN)",
+      "mobile": "Mobile Number",
+      "email": "Email"
+    },
+    ...
+  ],
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/institutes?district_code=26&is_govt=true</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmployees">
+                                /api/v1/employees
+                            </button>
+                        </h2>
+                        <div id="collapseEmployees" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Fetch employees for a specific EIIN number.</p>
+                                <p><strong>Parameters:</strong></p>
+                                <ul>
+                                    <li><code>eiin_no</code>: string (required) - EIIN number of the institute.</li>
+                                    <li><code>page</code>: integer (default: 1) - Page number for pagination.</li>
+                                    <li><code>size</code>: integer (default: 50) - Number of records per page.</li>
+                                    <li><code>full_response</code>: boolean (default: false) - Include raw API response.</li>
+                                    <li><code>export_csv</code>: boolean (default: false) - Export data to CSV.</li>
+                                </ul>
+                                <p><strong>Features:</strong> Returns employee details with pagination and metadata (e.g., total teachers/staff). Optional CSV export.</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": [
+    {
+      "name": "Employee Name",
+      "name_bn": "Employee Name (BN)",
+      "gender": "Gender",
+      "date_of_birth": "YYYY-MM-DD",
+      "designation": "Designation",
+      "employment_status": "Status"
+    },
+    ...
+  ],
+  "meta": {
+    "total": 25,
+    "currentPage": 1,
+    ...
+  },
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/employees?eiin_no=113450</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTeachers">
+                                /api/v1/teachers
+                            </button>
+                        </h2>
+                        <div id="collapseTeachers" class="accordion-collapse collapse" data-bs-parent="#apiDocsAccordion">
+                            <div class="accordion-body">
+                                <p><strong>Method:</strong> GET</p>
+                                <p><strong>Description:</strong> Fetch detailed teacher information for a specific EIIN number.</p>
+                                <p><strong>Parameters:</strong></p>
+                                <ul>
+                                    <li><code>eiin_no</code>: string (required) - EIIN number of the institute.</li>
+                                    <li><code>page</code>: integer (default: 1) - Page number for pagination.</li>
+                                    <li><code>size</code>: integer (default: 50) - Number of records per page.</li>
+                                    <li><code>full_response</code>: boolean (default: false) - Include raw API response.</li>
+                                    <li><code>export_csv</code>: boolean (default: false) - Export data to CSV.</li>
+                                </ul>
+                                <p><strong>Features:</strong> Filters for teachers only (employeeTypeId=2), includes additional fields like employee type and training info. Supports CSV export.</p>
+                                <p><strong>Response Format:</strong></p>
+                                <pre>
+{
+  "status": "success",
+  "data": [
+    {
+      "name": "Teacher Name",
+      "name_bn": "Teacher Name (BN)",
+      "gender": "Gender",
+      "date_of_birth": "YYYY-MM-DD",
+      "designation": "Designation",
+      "employment_status": "Status",
+      "employee_type_id": "ID",
+      "employee_type_name": "Type Name",
+      "exam_program": "Program Name",
+      "training_info": "Training Details"
+    },
+    ...
+  ],
+  "meta": {
+    "total": 25,
+    "currentPage": 1,
+    ...
+  },
+  "api_owner": "@ISmartCoder",
+  "api_dev": "t.me/TheSmartDev"
+}
+                                </pre>
+                                <p><strong>Example:</strong></p>
+                                <pre>GET /api/v1/teachers?eiin_no=113450</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ads-card animate__fadeInUp">
+                <h3>Need Custom Bots or APIs?</h3>
+                <p>Transform your ideas into reality with custom-built bots and APIs tailored to your needs!</p>
+                <p>Contact <a href="https://t.me/ISmartCoder" target="_blank">@ISmartCoder</a> to order now and elevate your project!</p>
+                <a href="https://t.me/ISmartCoder" target="_blank" class="btn btn-contact mt-3">Contact Now</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>© 2025 SmartDev's Institute Research API. All rights reserved.</p>
+            <p>API Owner: <a href="https://t.me/ISmartCoder" target="_blank">@ISmartCoder</a></p>
+            <p>API Developer: <a href="https://t.me/TheSmartDev" target="_blank">t.me/TheSmartDev</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function checkApiStatus() {
+            const statusResponse = document.getElementById('status-response');
+            const apiStatus = document.getElementById('api-status');
+            const apiHealth = document.getElementById('api-health');
+            
+            statusResponse.style.display = 'none';
+            statusResponse.classList.remove('status-success', 'status-error');
+            statusResponse.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/v1/divisions', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Unexpected response format: ${text.slice(0, 50)}...`);
+                }
+                const data = await response.json();
+                apiStatus.textContent = 'Online';
+                apiStatus.style.color = '#28a745';
+                apiHealth.textContent = 'Healthy';
+                apiHealth.style.color = '#28a745';
+                statusResponse.classList.add('status-success');
+                statusResponse.innerHTML = `<strong>Success!</strong> API is operational. Response: <pre>${JSON.stringify(data, null, 2)}</pre>`;
+                statusResponse.style.display = 'block';
+                console.log('API Status Check: Success', data);
+            } catch (error) {
+                apiStatus.textContent = 'Offline';
+                apiStatus.style.color = '#dc3545';
+                apiHealth.textContent = 'Unhealthy';
+                apiHealth.style.color = '#dc3545';
+                statusResponse.classList.add('status-error');
+                statusResponse.innerHTML = `<strong>Error!</strong> Failed to reach API: ${error.message}`;
+                statusResponse.style.display = 'block';
+                console.error('API Status Check: Error', error.message);
+            }
+        }
+
+        async function populateThanas() {
+            const districtSelect = document.getElementById('district-select');
+            const thanaSelect = document.getElementById('thana-select');
+            const districtCode = districtSelect.value;
+
+            thanaSelect.innerHTML = '<option value="">Select Thana</option>';
+            thanaSelect.disabled = !districtCode;
+
+            if (!districtCode) return;
+
+            try {
+                const response = await fetch(`/api/v1/thanas?district_code=${districtCode}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Unexpected response format: ${text.slice(0, 50)}...`);
+                }
+                const data = await response.json();
+                if (data.status === 'success' && data.data) {
+                    Object.entries(data.data).forEach(([name, code]) => {
+                        const option = document.createElement('option');
+                        option.value = code;
+                        option.textContent = name;
+                        thanaSelect.appendChild(option);
+                    });
+                    thanaSelect.disabled = false;
+                } else {
+                    throw new Error(data.message || 'No thanas found');
+                }
+            } catch (error) {
+                console.error('Thana Fetch Error:', error.message);
+                thanaSelect.disabled = true;
+                const testResponse = document.getElementById('test-response');
+                testResponse.classList.add('test-error');
+                testResponse.innerHTML = `<strong>Error!</strong> Failed to fetch thanas: ${error.message}`;
+                testResponse.style.display = 'block';
+            }
+        }
+
+        async function testApi(event) {
+            event.preventDefault();
+            const testResponse = document.getElementById('test-response');
+            const eiinInput = document.getElementById('eiin-input');
+            const eiinValue = eiinInput.value.trim();
+
+            testResponse.style.display = 'none';
+            testResponse.classList.remove('test-success', 'test-error');
+            testResponse.innerHTML = '';
+
+            if (!eiinValue) {
+                testResponse.classList.add('test-error');
+                testResponse.innerHTML = `<strong>Error!</strong> EIIN number is required.`;
+                testResponse.style.display = 'block';
+                console.error('API Test: Error - EIIN number is empty');
+                return;
+            }
+
+            if (!/^\d+$/.test(eiinValue)) {
+                testResponse.classList.add('test-error');
+                testResponse.innerHTML = `<strong>Error!</strong> EIIN number must be numeric.`;
+                testResponse.style.display = 'block';
+                console.error('API Test: Error - Invalid EIIN format');
+                return;
+            }
+
+            const params = new URLSearchParams();
+            params.append('eiin_no', eiinValue);
+
+            try {
+                console.log(`Fetching teachers for EIIN: ${eiinValue}`);
+                const response = await fetch(`/api/v1/teachers?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText.slice(0, 100)}...`);
+                }
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Unexpected response format: ${text.slice(0, 50)}...`);
+                }
+                const data = await response.json();
+                if (data.status === 'success' && data.data && data.data.length > 0) {
+                    testResponse.classList.add('test-success');
+                    testResponse.innerHTML = `<strong>Success!</strong> Teacher data retrieved: <pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                    console.log('API Test: Success', data);
+                } else {
+                    throw new Error(data.message || 'No teachers found for the provided EIIN');
+                }
+                testResponse.style.display = 'block';
+            } catch (error) {
+                testResponse.classList.add('test-error');
+                testResponse.innerHTML = `<strong>Error!</strong> Failed to fetch teachers: ${error.message}`;
+                testResponse.style.display = 'block';
+                console.error('API Test: Error', error.message);
+            }
+        }
+
+        window.onload = () => {
+            checkApiStatus();
+            document.getElementById('division-select').addEventListener('change', () => {
+                const districtSelect = document.getElementById('district-select');
+                districtSelect.disabled = false;
+                populateThanas();
+            });
+            document.getElementById('district-select').addEventListener('change', populateThanas);
+            document.getElementById('test-form').addEventListener('submit', testApi);
+        };
+    </script>
+</body>
+</html>
